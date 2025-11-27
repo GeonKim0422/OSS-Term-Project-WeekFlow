@@ -35,7 +35,7 @@ public class Main {
 
                 System.out.print("Enter Description: ");
                 String description = scanner.nextLine().trim();
-                scanner.close();
+
                 TimeSlot slot = new TimeSlot(startTime, endTime, description);
                 scheduleManager.addFixedSchedule(day, slot);
                 System.out.println("Schedule added!");
@@ -44,6 +44,7 @@ public class Main {
                 System.out.println("Invalid input. Please try again. Error: " + e.getMessage());
             }
         }
+        scanner.close();
     }
 
     private static void printSchedule(ScheduleManager scheduleManager) {
