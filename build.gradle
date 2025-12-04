@@ -1,0 +1,35 @@
+plugins {
+    // Java 애플리케이션 개발에 필요한 플러그인 적용
+    id 'application'
+}
+
+// Java 21 버전을 사용하도록 설정 (최신 LTS 버전 권장)
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+// 라이브러리 저장소 설정 (Maven Central)
+repositories {
+    mavenCentral()
+}
+
+// 의존성 설정
+dependencies {
+    // JUnit 5를 테스트 프레임워크로 사용하기 위한 의존성
+    // 팀원 C가 #5 이슈(테스트 환경 설정)를 진행할 때 필요합니다.
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
+}
+
+// JUnit 5 테스트를 실행하기 위한 설정
+test {
+    useJUnitPlatform()
+}
+
+// 실행 가능한 JAR 파일을 생성하기 위한 메인 클래스 지정
+// CLI 실행 진입점인 com.weekflow.Main 클래스를 지정합니다.
+application {
+    mainClass = 'com.weekflow.Main'
+}

@@ -1,0 +1,2 @@
+// 프로젝트 이름을 WeekFlow로 설정
+rootProject.name = 'WeekFlow'
