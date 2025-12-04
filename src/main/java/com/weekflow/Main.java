@@ -1,6 +1,8 @@
 package com.weekflow;
 
 import com.weekflow.core.TimeBlock;
+import com.weekflow.cli.CLIInterface;
+
 
 /**
  * WeekFlow 프로젝트의 메인 실행 클래스입니다.
