@@ -1,5 +1,7 @@
 # WeekFlow Contributing Guidelines
 
+Unfortunately, since this project is the university project for students, we are not receiving any contribution until December 2025.
+
 Thank you for your interest in the WeekFlow project! Your contributions are vital to growing this open-source planner.
 
 ## 🤝 Ways to Contribute
