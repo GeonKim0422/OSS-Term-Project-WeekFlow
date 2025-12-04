@@ -40,10 +40,11 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "feat/free-time-detection",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "C:/Users/kgkg1/바탕 화면/2-2학기/OSS/OSS-Term-Project-WeekFlow",
     "onboarding.tips.debug.path": "C:/Users/kgkg1/Downloads/WeekFlow/src/Main.java"
