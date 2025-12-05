@@ -9,8 +9,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * FreeTimeDetector 클래스에 대한 단위 테스트를 수행합니다.
- * Issue #2의 핵심 로직인 자유 시간 계산의 정확도를 검증합니다.
+ * Performs comprehensive unit tests for the FreeTimeDetector class.
+ * This ensures the accuracy of the core free time calculation logic (Issue #2).
  */
 class FreeTimeDetectorTest {
 
@@ -27,29 +27,30 @@ class FreeTimeDetectorTest {
 
     @Test
     void testNoFixedSchedule_FullDayFree() {
-        // Case 1: 고정 일정이 전혀 없을 때 (하루 전체가 자유 시간)
+        // Case 1: Testing when no fixed schedule is present (the entire day should be free time)
         List<TimeBlock> freeTimes = detector.detectDailyFreeTime(DayOfWeek.MONDAY, Collections.emptyList());
 
         assertEquals(1, freeTimes.size(), "Should have exactly one full-day block.");
         TimeBlock fullDay = freeTimes.get(0);
         assertEquals(LocalTime.MIN, fullDay.getStart());
-        // TimeBlockUtils.createFullDayBlock에서 LocalTime.MAX로 정의했으므로 이를 검증
+        // Verifying against LocalTime.MAX. LocalTime.MAX represents the end of the day (23:59:59.999...).
+        // The implementation must handle this boundary safely without attempting to call plusNanos(1).
         assertEquals(LocalTime.MAX, fullDay.getEnd());
-        // 24시간을 분으로 변환: 24 * 60 = 1440분 (LocalTime.MAX는 1 나노초 미만이라 약간의 오차는 무시)
+        // Verification of total minutes: 24 hours * 60 = 1440 minutes (allowing slight variance due to LocalTime.MAX)
         assertTrue(fullDay.getDurationMinutes() >= 1439, "Full day should be close to 1440 minutes.");
     }
 
     @Test
     void testSingleFixedBlock_SplitsDayIntoTwo() {
-        // Case 2: 고정 일정이 하나일 때 (자유 시간은 두 블록으로 분할됨)
-        // 고정 일정: 10:00 ~ 12:00 (120분)
+        // Case 2: Testing a single fixed block (should split the free time into two blocks)
+        // Fixed Block: 10:00 ~ 12:00 (120 minutes)
         schedule.addFixedTime(new TimeBlock(DayOfWeek.TUESDAY, LocalTime.of(10, 0), LocalTime.of(12, 0)));
 
         List<TimeBlock> freeTimes = detector.detectDailyFreeTime(DayOfWeek.TUESDAY, schedule.getFixedTimes(DayOfWeek.TUESDAY));
 
         assertEquals(2, freeTimes.size(), "Should be split into two free blocks.");
 
-        // Block 1: 00:00 ~ 10:00
+        // Block 1: 00:00 ~ 10:00. Note: FreeTimeDetector must ensure the result is sorted by start time.
         assertEquals(LocalTime.MIN, freeTimes.get(0).getStart());
         assertEquals(LocalTime.of(10, 0), freeTimes.get(0).getEnd());
 
@@ -57,25 +58,24 @@ class FreeTimeDetectorTest {
         assertEquals(LocalTime.of(12, 0), freeTimes.get(1).getStart());
         assertEquals(LocalTime.MAX, freeTimes.get(1).getEnd());
 
-        // 총 자유 시간 검증: 1440분 - 120분 = 1320분 (거의)
+        // Total free time verification: 1440 min - 120 min = 1320 min (approx.)
         long totalFreeTime = freeTimes.get(0).getDurationMinutes() + freeTimes.get(1).getDurationMinutes();
         assertTrue(totalFreeTime >= 1319, "Total free time should be close to 1320 minutes.");
     }
 
     @Test
     void testMultipleOverlappingBlocks_CorrectlyMerged() {
-        // Case 3: 겹치는 고정 일정이 있을 때 (FreeTimeDetector에서 FixedSchedule은 정렬되므로, TimeBlockUtils에서 처리되어야 함)
-        // FixedSchedule은 중복 처리를 하지 않고 정렬만 하므로, FreeTimeDetector는 모든 블록을 순서대로 빼야 합니다.
+        // Case 3: Testing overlapping fixed blocks. FreeTimeDetector must process all blocks sequentially.
 
-        // 고정 1: 08:00 ~ 10:00
+        // Fixed 1: 08:00 ~ 10:00
         schedule.addFixedTime(new TimeBlock(DayOfWeek.WEDNESDAY, LocalTime.of(8, 0), LocalTime.of(10, 0)));
-        // 고정 2: 09:30 ~ 11:30 (고정 1과 30분 겹침)
+        // Fixed 2: 09:30 ~ 11:30 (overlaps with Fixed 1 by 30 minutes)
         schedule.addFixedTime(new TimeBlock(DayOfWeek.WEDNESDAY, LocalTime.of(9, 30), LocalTime.of(11, 30)));
 
         List<TimeBlock> freeTimes = detector.detectDailyFreeTime(DayOfWeek.WEDNESDAY, schedule.getFixedTimes(DayOfWeek.WEDNESDAY));
 
-        // 최종 고정 시간대: 08:00 ~ 11:30 (210분)
-        // 자유 시간: 00:00~08:00, 11:30~23:59:59...
+        // Final fixed time span: 08:00 ~ 11:30 (210 minutes)
+        // Expected free time blocks (must be sorted): 00:00~08:00, 11:30~23:59:59...
 
         assertEquals(2, freeTimes.size(), "Should have two non-contiguous free blocks.");
 
@@ -85,7 +85,7 @@ class FreeTimeDetectorTest {
         // Block 2: 11:30 ~ 23:59:59...
         assertEquals(LocalTime.of(11, 30), freeTimes.get(1).getStart());
 
-        // 총 자유 시간 검증: 1440분 - 210분 = 1230분 (거의)
+        // Total free time verification: 1440 min - 210 min = 1230 min (approx.)
         long totalFreeTime = freeTimes.get(0).getDurationMinutes() + freeTimes.get(1).getDurationMinutes();
         assertTrue(totalFreeTime >= 1229, "Total free time should be close to 1230 minutes.");
     }
@@ -94,28 +94,22 @@ class FreeTimeDetectorTest {
 
     @Test
     void testDetectWeeklyFreeTime_CorrectAggregation() {
-        // 목요일 (목표: 120분 고정)
-        schedule.addFixedTime(new TimeBlock(DayOfWeek.THURSDAY, LocalTime.of(15, 0), LocalTime.of(17, 0))); // 120분 고정
+        // Thursday (Target: 120 minutes fixed)
+        schedule.addFixedTime(new TimeBlock(DayOfWeek.THURSDAY, LocalTime.of(15, 0), LocalTime.of(17, 0))); // 120 minutes fixed
 
-        // 금요일 (목표: 60분 고정)
-        schedule.addFixedTime(new TimeBlock(DayOfWeek.FRIDAY, LocalTime.of(20, 0), LocalTime.of(21, 0))); // 60분 고정
+        // Friday (Target: 60 minutes fixed)
+        schedule.addFixedTime(new TimeBlock(DayOfWeek.FRIDAY, LocalTime.of(20, 0), LocalTime.of(21, 0))); // 60 minutes fixed
 
-        // 주의 모든 요일 데이터를 가져와서 주간 자유 시간 계산
+        // Fetch all daily data and calculate weekly free time
         List<TimeBlock> weeklyFreeTime = detector.detectWeeklyFreeTime(schedule);
 
-        // 일요일부터 토요일까지 총 7개의 Free Time Block 리스트가 반환되어야 합니다.
-        // 고정 일정이 없는 5일(월, 화, 수, 토, 일) = 5 * 1 블록
-        // 고정 일정이 있는 2일(목, 금) = 2 * 2 블록
-        // 총 블록 수: 5 + 4 = 9개가 예상되지만, detector의 구현 방식에 따라 하루당 1개의 블록 리스트만 반환되어야 합니다.
-        // (FreeTimeDetector는 주간 일정이 아닌, 모든 FreeTimeBlock을 하나의 리스트로 반환해야 함)
-
-        // 총 블록 수 검증 (고정 일정 없는 날 1개 블록, 있는 날 2개 블록)
+        // Expected total number of blocks (5 full days * 1 block) + (2 days * 2 split blocks) = 9
         assertEquals(1 * 5 + 2 * 2, weeklyFreeTime.size(), "Total free blocks should be 9 (5 full days + 4 split blocks).");
 
-        // 총 자유 시간 검증
-        // 7일 * 1440분 = 10080분 (총 시간)
-        // 총 고정 시간: 목(120분) + 금(60분) = 180분
-        // 총 자유 시간 예상: 10080분 - 180분 = 9900분
+        // Total free time verification
+        // Total time for 7 days * 1440 min = 10080 minutes
+        // Total fixed time: Thu (120 min) + Fri (60 min) = 180 minutes
+        // Expected total free time: 10080 min - 180 min = 9900 minutes (approx.)
 
         long actualTotalFreeTime = weeklyFreeTime.stream()
                 .mapToLong(TimeBlock::getDurationMinutes)
