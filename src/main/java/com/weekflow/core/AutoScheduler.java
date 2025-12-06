@@ -35,13 +35,13 @@ public class AutoScheduler {
                 LocalTime end = start.plusMinutes(duration);
 
                 TimeBlock taskBlock =
-                        new TimeBlock(best.getDay(), start, end);
+                        new TimeBlock(best.getDay(), start, end, task.getTitle());
                 scheduled.add(taskBlock);
 
                 // FreeTime 분할
                 if (end.isBefore(best.getEndTime())) {
                     TimeBlock remaining =
-                            new TimeBlock(best.getDay(), end, best.getEndTime());
+                            new TimeBlock(best.getDay(), end, best.getEndTime(), "");
 
                     int idx = freeTimes.indexOf(best);
                     freeTimes.set(idx, remaining);
