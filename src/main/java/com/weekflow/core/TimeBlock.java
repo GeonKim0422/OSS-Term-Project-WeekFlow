@@ -14,8 +14,10 @@ public class TimeBlock {
     private final DayOfWeek day;
     private final LocalTime startTime;
     private final LocalTime endTime;
+    private String title; // 추가
 
-    public TimeBlock(DayOfWeek day, LocalTime start, LocalTime end) {
+
+    public TimeBlock(DayOfWeek day, LocalTime start, LocalTime end, String title) {
         if (start.isAfter(end) || start.equals(end)) {
             // 시간 유효성 검사
             throw new IllegalArgumentException("시작 시간은 종료 시간보다 빨라야 합니다.");
@@ -23,6 +25,8 @@ public class TimeBlock {
         this.day = day;
         this.startTime = start;
         this.endTime = end;
+        this.title = title;
+
     }
 
     // --- Getter Methods ---
@@ -67,6 +71,6 @@ public class TimeBlock {
 
     @Override
     public String toString() {
-        return String.format("[%s] %s - %s (총 %d분)", day, startTime, endTime, getDurationMinutes());
+        return String.format("[%s] %s - %s | %s (total %dmin)", day, startTime, endTime, title, getDurationMinutes());
     }
 }
