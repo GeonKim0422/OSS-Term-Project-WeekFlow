@@ -1,4 +1,4 @@
-package com.weekflow.FileManager;
+package com.weekflow.core;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -6,8 +6,6 @@ import java.time.LocalTime;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.weekflow.core.TimeBlock;
 
 public class FixedScheduleParser {
 

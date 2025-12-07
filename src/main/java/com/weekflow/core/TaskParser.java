@@ -1,4 +1,4 @@
-package com.weekflow.FileManager;
+package com.weekflow.core;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

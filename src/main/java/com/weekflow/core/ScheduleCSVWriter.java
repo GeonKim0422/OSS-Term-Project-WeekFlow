@@ -1,11 +1,8 @@
-package com.weekflow.FileManager;
+package com.weekflow.core;
 
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.time.DayOfWeek;
-
-import com.weekflow.core.FixedSchedule;
-import com.weekflow.core.TimeBlock;
 
 public class ScheduleCSVWriter {
 
