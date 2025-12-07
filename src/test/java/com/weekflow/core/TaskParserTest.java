@@ -1,13 +1,12 @@
 package com.weekflow.core;
 
-
 import com.weekflow.core.Task;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.time.LocalDate;
 import java.util.List;
 
 public class TaskParserTest {
@@ -47,7 +46,10 @@ public class TaskParserTest {
         Task t = tasks.get(0);
         assertEquals("Project", t.getTitle());
         assertEquals(120, t.getDurationMinutes());
-        assertEquals("2025-01-10", t.getDeadline());
+
+        
+        assertEquals(LocalDate.parse("2025-01-10"), t.getDeadline());
+
         assertEquals(2, t.getPriority());
     }
 }

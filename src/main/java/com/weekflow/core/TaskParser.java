@@ -2,10 +2,9 @@ package com.weekflow.core;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.weekflow.core.Task;
 
 public class TaskParser {
 
@@ -38,17 +37,22 @@ public class TaskParser {
 
                 // title, duration, deadline, priority 4개 모두 있는 경우
                 else if (p.length >= 4) {
+
                     String title = p[0].trim();
                     int duration = Integer.parseInt(p[1].trim());
 
-                    String deadline = p[2].trim();
-                    if (deadline.isEmpty()) deadline = null; // 빈칸이면 null 처리
+                    // deadline — String → LocalDate 변환
+                    LocalDate deadline = null;
+                    if (!p[2].trim().isEmpty()) {
+                        deadline = LocalDate.parse(p[2].trim());
+                    }
 
                     int priority = 0;
-                    if (p[3].trim().length() > 0) {
+                    if (!p[3].trim().isEmpty()) {
                         priority = Integer.parseInt(p[3].trim());
                     }
 
+                    // 🔥 Task의 실제 생성자(LocalDate)를 사용해야 함
                     tasks.add(new Task(title, duration, deadline, priority));
                 }
             }
