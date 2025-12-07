@@ -16,7 +16,6 @@ public class TaskParserTest {
 
         String path = "test_task.csv";
 
-        // 테스트용 CSV 생성
         PrintWriter pw = new PrintWriter(new FileWriter(path));
         pw.println("title,duration");
         pw.println("Study,60");
@@ -46,10 +45,7 @@ public class TaskParserTest {
         Task t = tasks.get(0);
         assertEquals("Project", t.getTitle());
         assertEquals(120, t.getDurationMinutes());
-
-        
         assertEquals(LocalDate.parse("2025-01-10"), t.getDeadline());
-
         assertEquals(2, t.getPriority());
     }
 }

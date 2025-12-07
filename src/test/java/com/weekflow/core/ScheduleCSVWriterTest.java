@@ -1,15 +1,15 @@
 package com.weekflow.core;
 
-
 import com.weekflow.core.FixedSchedule;
 import com.weekflow.core.TimeBlock;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.time.LocalTime;
 import java.time.DayOfWeek;
 
@@ -30,7 +30,6 @@ public class ScheduleCSVWriterTest {
         // CSV 생성 실행
         ScheduleCSVWriter.writeSchedule(schedule, output);
 
-        // 결과 CSV 읽어서 검증
         BufferedReader br = new BufferedReader(new FileReader(output));
 
         String header = br.readLine();
