@@ -36,15 +36,18 @@ public class Main {
                 DayOfWeek.MONDAY,
                 LocalTime.of(9, 0),
                 LocalTime.of(12, 0),
-                ""));   // free time has no title
+                ""   // free time has no title
+        ));
 
         free.add(new TimeBlock(
                 DayOfWeek.MONDAY,
                 LocalTime.of(13, 0),
                 LocalTime.of(18, 0),
-                ""));   // free time has no title
+                ""   // free time has no title
+        ));
 
         List<TimeBlock> result = scheduler.scheduleTasks(tasks, free);
+
 
         System.out.println("=== Auto Scheduling Result ===");
         for (TimeBlock t : result) {
