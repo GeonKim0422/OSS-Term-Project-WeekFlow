@@ -2,6 +2,7 @@ package com.weekflow.core;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.time.DayOfWeek;
 import java.util.List;
 
 /**
