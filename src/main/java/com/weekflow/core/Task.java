@@ -1,17 +1,18 @@
 package com.weekflow.core;
+import java.time.LocalDate;
 
 public class Task {
 
     private String title;              // 작업 제목
     private int durationMinutes;       // 소요 시간 (분)
-    private String deadline;           // 마감 기한 (문자열로 단순 처리)
+    private LocalDate deadline;        // 마감 기한 (문자열로 단순 처리)
     private int priority;              // 우선순위 (기본값 0)
 
     // 기본 생성자
     public Task() {}
 
     // 주 생성자
-    public Task(String title, int durationMinutes, String deadline, int priority) {
+    public Task(String title, int durationMinutes, LocalDate deadline, int priority) {
         this.title = title;
         this.durationMinutes = durationMinutes;
         this.deadline = deadline;
@@ -32,9 +33,9 @@ public class Task {
         return durationMinutes;
     }
 
-    public String getDeadline() {
-        return deadline;
-    }
+    public LocalDate getDeadline() {
+        return deadline; }
+
 
     public int getPriority() {
         return priority;
@@ -45,9 +46,10 @@ public class Task {
         return "Task{" +
                 "title='" + title + '\'' +
                 ", durationMinutes=" + durationMinutes +
-                ", deadline='" + deadline + '\'' +
+                ", deadline=" + deadline +
                 ", priority=" + priority +
                 '}';
     }
+
 }
 
