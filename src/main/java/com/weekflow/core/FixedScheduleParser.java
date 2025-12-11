@@ -19,7 +19,6 @@ public class FixedScheduleParser {
 
             while ((line = br.readLine()) != null) {
 
-                // 첫 줄 헤더 건너뛰기
                 if (first) {
                     first = false;
                     continue;
@@ -28,6 +27,7 @@ public class FixedScheduleParser {
                 String[] p = line.split(",");
                 if (p.length < 4) continue;
 
+                String name = p[0].trim();   // ⭐ type -> TimeBlock 이름
                 String startStr = p[1].trim();
                 String endStr = p[2].trim();
                 String dayStr = p[3].trim();
@@ -35,15 +35,14 @@ public class FixedScheduleParser {
                 LocalTime start = LocalTime.parse(startStr);
                 LocalTime end = LocalTime.parse(endStr);
 
-                // EVERYDAY → 7개의 TimeBlock 생성
                 if (dayStr.equalsIgnoreCase("EVERYDAY")) {
                     for (DayOfWeek day : DayOfWeek.values()) {
-                        blocks.add(new TimeBlock(day, start, end));
+                        blocks.add(new TimeBlock(day, start, end, name)); // ⭐ 이름 전달
                     }
                 } else {
                     DayOfWeek day = convertDay(dayStr);
                     if (day != null) {
-                        blocks.add(new TimeBlock(day, start, end));
+                        blocks.add(new TimeBlock(day, start, end, name)); // ⭐ 이름 전달
                     }
                 }
             }
@@ -57,18 +56,18 @@ public class FixedScheduleParser {
         return blocks;
     }
 
-    // 문자열 → DayOfWeek
     private static DayOfWeek convertDay(String s) {
-        s = s.toUpperCase();
+    s = s.toUpperCase();
 
-        if (s.equals("MON")) return DayOfWeek.MONDAY;
-        if (s.equals("TUE")) return DayOfWeek.TUESDAY;
-        if (s.equals("WED")) return DayOfWeek.WEDNESDAY;
-        if (s.equals("THU")) return DayOfWeek.THURSDAY;
-        if (s.equals("FRI")) return DayOfWeek.FRIDAY;
-        if (s.equals("SAT")) return DayOfWeek.SATURDAY;
-        if (s.equals("SUN")) return DayOfWeek.SUNDAY;
+    if (s.equals("MON") || s.equals("MONDAY")) return DayOfWeek.MONDAY;
+    if (s.equals("TUE") || s.equals("TUESDAY")) return DayOfWeek.TUESDAY;
+    if (s.equals("WED") || s.equals("WEDNESDAY")) return DayOfWeek.WEDNESDAY;
+    if (s.equals("THU") || s.equals("THURSDAY")) return DayOfWeek.THURSDAY;
+    if (s.equals("FRI") || s.equals("FRIDAY")) return DayOfWeek.FRIDAY;
+    if (s.equals("SAT") || s.equals("SATURDAY")) return DayOfWeek.SATURDAY;
+    if (s.equals("SUN") || s.equals("SUNDAY")) return DayOfWeek.SUNDAY;
 
-        return null;
-    }
+    return null;
+}
+
 }

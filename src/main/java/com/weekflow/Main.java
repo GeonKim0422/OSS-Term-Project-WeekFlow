@@ -1,23 +1,39 @@
 package com.weekflow;
 
-import com.weekflow.core.TimeBlock;
+import com.weekflow.core.TaskSchedulerService;
 
-/**
- * WeekFlow 프로젝트의 메인 실행 클래스입니다.
- * CLI 기반 인터페이스의 시작점 역할을 합니다.
- */
+import java.io.File;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("🚀 WeekFlow - 남는 시간 기반 역스케줄링 플래너가 시작됩니다.");
 
-        // --- MVP 기능 실행 예시 ---
-        // 1. TimeBlock 클래스 테스트 (팀원 A의 작업)
-        // TimeBlock morningFreeTime = new TimeBlock(DayOfWeek.MONDAY, LocalTime.of(7, 0), LocalTime.of(9, 0));
-        // System.out.println("남는 시간 블록: " + morningFreeTime);
+        TaskSchedulerService service = new TaskSchedulerService();
 
-        // 2. CLI 인터페이스 로직 실행 (팀원 C의 작업)
-        // new CliInterface().start();
+        String basePath = "files/";
 
-        System.out.println("프로그램을 종료합니다.");
+        // 1. 고정 스케줄 CSV 로드
+        service.loadFixedScheduleFromCSV(basePath + "fixed_schedule.csv");
+
+        // 2. 📌 files 폴더에서 "task"가 들어간 csv 자동 찾기
+        File dir = new File(basePath);
+        File[] taskFiles = dir.listFiles(f ->
+                f.getName().toLowerCase().contains("task") &&
+                f.getName().toLowerCase().endsWith(".csv")
+        );
+
+        if (taskFiles == null || taskFiles.length == 0) {
+            System.out.println("⚠ Task CSV 파일을 찾을 수 없습니다.");
+        } else {
+            System.out.println("📂 발견된 task 파일 목록:");
+            for (File tf : taskFiles) {
+                System.out.println(" - " + tf.getName());
+                service.loadTaskCSVAndSchedule(basePath + tf.getName());
+            }
+        }
+
+        // 3. 최종 스케줄 저장
+        service.exportFinalSchedule(basePath + "final_schedule.csv");
+
+        System.out.println("🎉 Scheduling Completed!");
     }
 }

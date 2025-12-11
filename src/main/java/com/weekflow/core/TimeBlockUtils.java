@@ -12,10 +12,12 @@ import java.util.List;
 public class TimeBlockUtils {
 
     /**
-     * 하루 전체 TimeBlock을 생성합니다. (00:00부터 24:00 직전까지)
+     * 하루 전체 TimeBlock을 생성합니다. (00:00 ~ 23:59:59.999999999)
      */
     public static TimeBlock createFullDayBlock(DayOfWeek day) {
-        return new TimeBlock(day, LocalTime.MIDNIGHT, LocalTime.MAX.plusNanos(1));
+        // ❗ LocalTime.MAX.plusNanos(1) 은 24:00이 되어 IllegalArgumentException 발생
+        // ✔ LocalTime.MAX(23:59:59.999999999)까지만 사용해야 정상 동작
+        return new TimeBlock(day, LocalTime.MIDNIGHT, LocalTime.MAX);
     }
 
     /**
@@ -38,14 +40,20 @@ public class TimeBlockUtils {
 
         // A. Fixed Time의 시작이 Free Time의 시작보다 늦은 경우 (앞부분이 남음)
         if (fixedBlock.getStartTime().isAfter(freeBlock.getStartTime())) {
-            // 예시: Free(9-17), Fixed(11-14) -> 앞부분 (9-11) 남음
-            result.add(new TimeBlock(freeBlock.getDay(), freeBlock.getStartTime(), fixedBlock.getStartTime()));
+            result.add(new TimeBlock(
+                    freeBlock.getDay(),
+                    freeBlock.getStartTime(),
+                    fixedBlock.getStartTime()
+            ));
         }
 
         // B. Fixed Time의 끝이 Free Time의 끝보다 이른 경우 (뒷부분이 남음)
         if (fixedBlock.getEndTime().isBefore(freeBlock.getEndTime())) {
-            // 예시: Free(9-17), Fixed(11-14) -> 뒷부분 (14-17) 남음
-            result.add(new TimeBlock(freeBlock.getDay(), fixedBlock.getEndTime(), freeBlock.getEndTime()));
+            result.add(new TimeBlock(
+                    freeBlock.getDay(),
+                    fixedBlock.getEndTime(),
+                    freeBlock.getEndTime()
+            ));
         }
 
         return result;
