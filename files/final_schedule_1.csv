@@ -1,0 +1,19 @@
+type,start,end,day
+sleep,00:00,07:00,MONDAY
+Urgent Report,07:00,07:20,MONDAY
+Unit Test Write,07:20,08:50,MONDAY
+Core Design,08:50,09:15,MONDAY
+Idea Sketch,09:15,09:30,MONDAY
+Email Responses,09:30,09:40,MONDAY
+class,10:00,12:00,MONDAY
+Document Review,12:00,15:00,MONDAY
+Draft Manuscript,15:00,16:00,MONDAY
+Code Refactoring,16:00,18:00,MONDAY
+Short Learning,18:00,18:30,MONDAY
+Weekly Project,18:30,19:45,MONDAY
+sleep,00:00,07:00,TUESDAY
+sleep,00:00,07:00,WEDNESDAY
+sleep,00:00,07:00,THURSDAY
+sleep,00:00,07:00,FRIDAY
+sleep,00:00,07:00,SATURDAY
+sleep,00:00,07:00,SUNDAY

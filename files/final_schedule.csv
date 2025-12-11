@@ -1,0 +1,9 @@
+type,start,end,day
+sleep,00:00,07:00,MONDAY
+class,10:00,12:00,MONDAY
+sleep,00:00,07:00,TUESDAY
+sleep,00:00,07:00,WEDNESDAY
+sleep,00:00,07:00,THURSDAY
+sleep,00:00,07:00,FRIDAY
+sleep,00:00,07:00,SATURDAY
+sleep,00:00,07:00,SUNDAY

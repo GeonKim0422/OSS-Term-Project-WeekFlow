@@ -1,72 +1,72 @@
+// src/com/weekflow/core/TaskAutoScheduler.java
+
 package com.weekflow.core;
 
 import java.time.LocalTime;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.time.DayOfWeek;
-
+import java.util.List;
+// import java.util.Random; // Removed, not needed for Best-Fit
+// import java.util.stream.Collectors; // Removed, not needed for Best-Fit
 
 public class TaskAutoScheduler {
 
-    private final Random random = new Random();
-
+    /**
+     * Assigns a Task to the most suitable Free Time Block using the Best-Fit strategy.
+     * The task list is pre-sorted by deadline/priority in TaskSchedulerService.
+     * @param task The task to be assigned.
+     * @param schedule The current FixedSchedule object to update.
+     * @param detector The FreeTimeDetector to get current free blocks.
+     * @return true if the task was successfully assigned, false otherwise.
+     */
     public boolean assignTask(Task task, FixedSchedule schedule, FreeTimeDetector detector) {
 
-        // 1) 전체 free blocks 가져오기
+        // 1. Calculate all available free blocks for the week
         List<TimeBlock> allFreeBlocks = detector.detectWeeklyFreeTime(schedule);
 
-        // 2) free blocks를 요일별로 그룹화
-        Map<DayOfWeek, List<TimeBlock>> byDay =
-                allFreeBlocks.stream().collect(Collectors.groupingBy(TimeBlock::getDay));
-
-        // 3) free time이 있는 요일들
-        DayOfWeek[] days = byDay.keySet().toArray(DayOfWeek[]::new);
-
-        if (days.length == 0) {
-            System.out.println("⚠ No free days for task: " + task.getTitle());
-            return false;
-        }
-
-        // ⭐ 4) 랜덤으로 요일 선택
-        DayOfWeek chosenDay = days[random.nextInt(days.length)];
-        List<TimeBlock> dailyFreeBlocks = byDay.get(chosenDay);
-
-        if (dailyFreeBlocks == null || dailyFreeBlocks.isEmpty()) {
-            System.out.println("⚠ No free blocks on selected day for task: " + task.getTitle());
-            return false;
-        }
-
-        // ⭐ 5) 해당 요일 free block 중 랜덤 선택
-        TimeBlock free = dailyFreeBlocks.get(random.nextInt(dailyFreeBlocks.size()));
-
-        long freeMinutes = free.getDurationMinutes();
+        // 2. Initialize variables for the Best-Fit search
+        TimeBlock bestFitBlock = null;
+        long minDurationDifference = Long.MAX_VALUE;
         long taskMinutes = task.getDurationMinutes();
 
-        if (freeMinutes < taskMinutes) {
-            System.out.println("⚠ Selected free block too small for task: " + task.getTitle());
+        // 3. Iterate through all Free Blocks to find the Best-Fit
+        for (TimeBlock freeBlock : allFreeBlocks) {
+            long freeMinutes = freeBlock.getDurationMinutes();
+
+            // Only consider blocks that can accommodate the task
+            if (freeMinutes >= taskMinutes) {
+                long durationDifference = freeMinutes - taskMinutes; // Remaining free time after placement
+
+                // Best-Fit: Select the block that leaves the minimum remaining time
+                if (durationDifference < minDurationDifference) {
+                    minDurationDifference = durationDifference;
+                    bestFitBlock = freeBlock;
+                }
+            }
+        }
+
+        // 4. Check if a suitable block was found
+        if (bestFitBlock == null) {
+            System.out.printf("❌ Task Assignment Failed: '%s' (%d min). No suitable free block found.\n", task.getTitle(), taskMinutes);
             return false;
         }
 
-        // ⭐ 6) free block 내부 랜덤 시간 선택
-        long latestStart = freeMinutes - taskMinutes;
-        long randomOffset = (latestStart > 0)
-                ? random.nextInt((int) latestStart + 1)
-                : 0;
-
-        LocalTime start = free.getStartTime().plusMinutes(randomOffset);
+        // 5. Assign the task to the beginning of the best-fit block
+        //    (This uses a First-Fit-in-Block strategy for simplicity and efficiency)
+        LocalTime start = bestFitBlock.getStartTime();
         LocalTime end = start.plusMinutes(taskMinutes);
 
-        // 7) 스케줄에 추가 (고정 블록으로)
+        // 6. Add the Task block to the schedule. FixedSchedule handles sorting by time.
         schedule.addFixedTime(new TimeBlock(
-        free.getDay(),
-        start,
-        end,
-        task.getTitle()     
+                bestFitBlock.getDay(),
+                start,
+                end,
+                task.getTitle() // Use task title as the block name
         ));
 
-
-        System.out.println("📌 Task scheduled: " + task.getTitle() +
-                " (" + free.getDay() + " " + start + " ~ " + end + ")");
+        System.out.printf("✅ Task Assigned: '%s' -> %s %s~%s\n",
+                task.getTitle(),
+                bestFitBlock.getDay(),
+                start,
+                end);
 
         return true;
     }
