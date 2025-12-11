@@ -1,15 +1,45 @@
 # OSS-Term-Project-WeekFlow
 Open Source Planner for Slack-Based Backward Scheduling
 
-Unfortunately, since this project is the university project for students, we are not receiving any contribution until December 2025.
+This project is part of a university course. External contributions are not accepted until December 2025.
 
-Project Goal
+---
 
-An open-source scheduler that automatically calculates the user’s available time throughout the week—based on fixed routines such as sleep, wake-up time, and classes—and then assigns tasks to the most suitable time slots.
+## Installation
 
-Project Vision
+### Requirements
+- JDK 17
+- Git
+- Gradle (wrapper included)
 
-A smart planner that goes beyond simple schedule recording by analyzing the structure of free time so users can utilize their time more efficiently.
-The project aims to become an open-source ecosystem where anyone can extend features and contribute.
+### Clone the Repository
+git clone https://github.com/GeonKim0422/OSS-Term-Project-WeekFlow.git  
+cd OSS-Term-Project-WeekFlow
 
-language: Java
+### Build the Project
+./gradlew build
+
+---
+
+## Usage
+
+The project runs as a CLI-based application. After building the project, use the following commands to execute it.
+
+### 1. Run with Gradle
+./gradlew run
+
+### 2. Run the JAR file
+java -jar build/libs/weekflow.jar --schedule \<fixed_schedule.csv\>
+
+### 3. Command-line Options
+--schedule \<file\>   Path to the fixed schedule CSV file  
+--tasks \<file\>      Path to the task CSV file (optional)  
+--output \<file\>     Path to the output file (optional)
+
+## Usage Example
+
+### When a task is successfully assigned
+ Task Assigned: 'Study' → MON 13:00~15:00
+
+
+
