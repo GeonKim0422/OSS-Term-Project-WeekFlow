@@ -1,0 +1,29 @@
+type,start,end,day
+sleep,00:00,07:00,MONDAY
+Urgent Report,07:00,07:20,MONDAY
+Unit Test Write,07:20,08:50,MONDAY
+Core Design,08:50,09:15,MONDAY
+Idea Sketch,09:15,09:30,MONDAY
+Email Responses,09:30,09:40,MONDAY
+Data Gathering,09:40,10:00,MONDAY
+class,10:00,12:00,MONDAY
+Document Review,12:00,15:00,MONDAY
+Draft Manuscript,15:00,16:00,MONDAY
+Code Refactoring,16:00,18:00,MONDAY
+Short Learning,18:00,18:30,MONDAY
+Weekly Project,18:30,19:45,MONDAY
+Emergency Data Analysis,19:45,22:15,MONDAY
+Meeting Minutes,22:15,22:30,MONDAY
+Code Cleanup,22:30,23:30,MONDAY
+Tidy Up,23:30,23:40,MONDAY
+sleep,00:00,07:00,TUESDAY
+Final Report,07:00,08:30,TUESDAY
+Quick Walk,08:30,09:00,TUESDAY
+Book Reading,09:00,12:00,TUESDAY
+Write Emails,12:00,12:25,TUESDAY
+Personal Study,12:25,14:25,TUESDAY
+sleep,00:00,07:00,WEDNESDAY
+sleep,00:00,07:00,THURSDAY
+sleep,00:00,07:00,FRIDAY
+sleep,00:00,07:00,SATURDAY
+sleep,00:00,07:00,SUNDAY

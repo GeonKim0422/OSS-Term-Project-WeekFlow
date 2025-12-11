@@ -1,0 +1,11 @@
+title,durationMinutes,deadline,priority
+Urgent Report,20,2025-12-15,0
+Document Review,180,2025-12-15,2
+Unit Test Write,90,2025-12-16,1
+Idea Sketch,15,2025-12-17,2
+Core Design,25,2025-12-17,0
+Draft Manuscript,60,2025-12-18,0
+Email Responses,10,2025-12-19,1
+Code Refactoring,120,2025-12-19,2
+Short Learning,30,2025-12-20,1
+Weekly Project,75,2025-12-21,0

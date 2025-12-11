@@ -1,3 +1,5 @@
+// src/com/weekflow/core/TaskSchedulerService.java
+
 package com.weekflow.core;
 
 import java.util.List;
@@ -19,7 +21,7 @@ public class TaskSchedulerService {
     }
 
     /**
-     * STEP 1: 고정 일정 CSV 로드
+     * STEP 1: Load Fixed Schedule from CSV.
      */
     public void loadFixedScheduleFromCSV(String path) {
         List<TimeBlock> blocks = FixedScheduleParser.parse(path);
@@ -32,12 +34,15 @@ public class TaskSchedulerService {
     }
 
     /**
-     * STEP 2: Task CSV 읽고 Task 자동 배정
+     * STEP 2: Reads Task CSV, sorts tasks by deadline/priority, and assigns them.
      */
     public void loadTaskCSVAndSchedule(String path) {
         List<Task> tasks = TaskParser.parse(path);
 
         System.out.println("\n=== Scheduling Tasks from file: " + path + " ===");
+
+        // Apply new sorting logic: Deadline-First, then Priority-Based
+        tasks.sort(new Task.TaskComparator()); // Sort tasks before scheduling
 
         for (Task task : tasks) {
             autoScheduler.assignTask(task, schedule, freeTimeDetector);
@@ -45,10 +50,9 @@ public class TaskSchedulerService {
     }
 
     /**
-     * STEP 3: 최종 스케줄을 CSV로 저장
+     * STEP 3: Export Final Schedule to CSV.
      */
-    public void exportFinalSchedule(String outputPath) {
-        ScheduleCSVWriter.writeSchedule(schedule, outputPath);
-        System.out.println("\n📤 Final schedule exported to: " + outputPath);
+    public void exportFinalSchedule(String path) {
+        ScheduleCSVWriter.writeSchedule(schedule, path);
     }
 }
